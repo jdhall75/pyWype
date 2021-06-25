@@ -4,6 +4,7 @@ import os
 import platform
 import re
 import sys
+import subprocess
 
 VERSION = 0.3
 
@@ -30,6 +31,18 @@ def root_user_check():
     if os.getuid() != 0:
         print("This program requires ROOT privileges. Exiting.")
         sys.exit()
+
+
+def get_mounted_devices():
+    devices = subprocess.Popen(
+        ["lsblk", "/dev/sd*", "--nodeps", "--output NAME,MODEL,VENDOR,SIZE,TYPE,STATE"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    output = devices.stdout.read()
+    if output:
+        print(output)
 
 
 def list_mounted_devices():
